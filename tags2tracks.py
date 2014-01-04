@@ -49,12 +49,12 @@ def copyImages(file_name_source, directory):
     
     
     file_name_image_list          = executeShellCommand("find \"" + os.path.split(file_name_source)[0] + "\" \\( -iname \"*.jpg\" -o -iname \"*.png\" \\)")
-    print("file_name_image_list = " + str(file_name_image_list))
+#     print("file_name_image_list = " + str(file_name_image_list))
     
     if len(file_name_image_list) > 0:
         os.mkdir(directory + "/scans")
-    else:
-        print("no scans")
+#     else:
+#         print("no scans")
     
     
     for file_name_image in file_name_image_list:
@@ -66,7 +66,15 @@ def copyImages(file_name_source, directory):
             print("error copy images: '" + file_name_image_dst + "' already exists")
             exit(1) 
         executeShellCommand("cp -v \"" + file_name_image + "\" \"" + file_name_image_dst + "\" > /dev/tty") 
+
+
+def setUTF8Terminal():
+    import sys
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
     
+
+setUTF8Terminal()
 
 
 # print("args = '" + str(sys.argv) + "'")
@@ -97,8 +105,15 @@ if not(tag.has_key("artist")  and  tag.has_key("album")  and  tag.has_key("date"
 artist  = capitalizeWords(tag["artist"][0])
 album   = capitalizeWords(tag["album"][0])
 date    = tag["date"][0]
-genre   = capitalizeWords(tag["genre"][0])
+# genre   = capitalizeWords(tag["genre"][0])
 title   = capitalizeWords(tag["title"][0])
+
+
+# tracknumber = tag["tracknumber"][0]
+# tracknumber = tracknumber.split("/")[0]
+# number  = int(tracknumber)
+
+
 number  = int(tag["tracknumber"][0])
 if number < 10:
     number = "0" + str(number)
@@ -109,7 +124,7 @@ else:
 directory = destination + "/" + artist + '/' + date + ' ' + album
 if not os.path.exists(directory):
     print('mkdir "' + directory + '"')
-    os.mkdir(directory)
+    os.makedirs(directory)
 
 
 copyImages(file_name_source, directory)
