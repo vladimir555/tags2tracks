@@ -43,6 +43,32 @@ def capitalizeWords(s):
     return r
 
 
+def copyImages(file_name_source, directory):
+    if os.path.exists(directory + "/scans"):
+        return
+    
+    
+    file_name_image_list          = executeShellCommand("find \"" + os.path.split(file_name_source)[0] + "\" \\( -iname \"*.jpg\" -o -iname \"*.png\" \\)")
+    print("file_name_image_list = " + str(file_name_image_list))
+    
+    if len(file_name_image_list) > 0:
+        os.mkdir(directory + "/scans")
+    else:
+        print("no scans")
+    
+    
+    for file_name_image in file_name_image_list:
+        file_name_image_dst = directory + "/scans/" + os.path.split(file_name_image)[1]
+        for i in range(0, 9):
+            if os.path.exists(file_name_image_dst):
+                file_name_image_dst = os.path.splitext(file_name_image_dst)[0] + str(i) + os.path.splitext(file_name_image_dst)[1]
+        if os.path.exists(file_name_image_dst):
+            print("error copy images: '" + file_name_image_dst + "' already exists")
+            exit(1) 
+        executeShellCommand("cp -v \"" + file_name_image + "\" \"" + file_name_image_dst + "\" > /dev/tty") 
+    
+
+
 # print("args = '" + str(sys.argv) + "'")
 if len(sys.argv) < 3  or  len(sys.argv) > 4:
     print(sys.argv[0] + " track_file destination_dir [encoding]")
@@ -86,8 +112,10 @@ if not os.path.exists(directory):
     os.mkdir(directory)
 
 
+copyImages(file_name_source, directory)
+
+
 file_name_destination = directory + '/' + number + ' ' + title + ext
 if not os.path.exists(file_name_destination):
     executeShellCommand('cp "' + file_name_source + '" "' + file_name_destination + '"')
-
 
