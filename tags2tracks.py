@@ -40,6 +40,8 @@ def capitalizeWords(s):
     for l in s:
         r = r + l.capitalize() + " "
     r = str(r).strip()
+    r = str(r).replace('/', ',')
+    r = str(r).replace('\\', ',')
     return r
 
 
