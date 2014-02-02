@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
+from operator import isNumberType
 
 
 '''
@@ -92,7 +93,15 @@ destination         = sys.argv[2]
 tag                 = mutagen.File(file_name_source)
 
 
-if not(tag.has_key("artist")  and  tag.has_key("album")  and  tag.has_key("date")  and  tag.has_key("title")  and  tag.has_key("tracknumber")): 
+date = ""
+if not tag.has_key("date"):
+    date = file_name_source.split("/")[-2][:4]
+    if not str(date).isalnum():
+        print("wrong date: '" + date + "'")
+        exit(1)
+   
+
+if not(tag.has_key("artist")  and  tag.has_key("album")  and  (tag.has_key("date") or date != "")  and  tag.has_key("title")  and  tag.has_key("tracknumber")): 
     print
 #     print("artist  = '" + str(tag["artist"]) + "'")
 #     print("album   = '" + str(tag["album"])  + "'")
@@ -106,7 +115,8 @@ if not(tag.has_key("artist")  and  tag.has_key("album")  and  tag.has_key("date"
 
 artist  = capitalizeWords(tag["artist"][0])
 album   = capitalizeWords(tag["album"][0])
-date    = tag["date"][0]
+if date == "":
+    date    = tag["date"][0]
 # genre   = capitalizeWords(tag["genre"][0])
 title   = capitalizeWords(tag["title"][0])
 
